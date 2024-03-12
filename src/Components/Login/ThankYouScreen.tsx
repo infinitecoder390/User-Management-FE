@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 function ThankYouScreen() {
   const navigate = useNavigate();
   const [redirectTime] = useState(5);
@@ -21,5 +20,4 @@ function ThankYouScreen() {
     </div>
   );
 }
-
 export default ThankYouScreen;

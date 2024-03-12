@@ -11,6 +11,7 @@ import Home from "./Components/Home/Home";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ThankYouScreen from "./Components/Login/ThankYouScreen";
+import NotFound from "./Components/common/NotFound";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [jwtToken, setJwtToken] = useState("");
@@ -35,29 +36,40 @@ function App() {
           router={createBrowserRouter([
             {
               path: "/",
-              element: <AuthLayout />,
-              children: [
-                {
-                  path: "/",
-                  element: <Login />,
-                },
-                {
-                  path: "/register-account",
-                  element: <Registration />,
-                },
-                {
-                  path: "/thank-you",
-                  element: <ThankYouScreen />,
-                },
-                // {
-                //   path: "/",
-                //   element: <Home />,
-                // },
-                // {
-                //   path: "/about-us",
-                //   element: <About />,
-                // },
-              ],
+              element: jwtToken ? <HomeLayout /> : <AuthLayout />, //
+              children: jwtToken
+                ? [
+                    {
+                      path: "/",
+                      element: <Home />,
+                    },
+                    {
+                      path: "/about-us",
+                      element: <About />,
+                    },
+                    {
+                      path: "/home",
+                      element: <Home />,
+                    },
+                  ]
+                : [
+                    {
+                      path: "/",
+                      element: <Login />,
+                    },
+                    {
+                      path: "/register-account",
+                      element: <Registration />,
+                    },
+                    {
+                      path: "/thank-you",
+                      element: <ThankYouScreen />,
+                    },
+                  ],
+            },
+            {
+              path: "*",
+              element: <NotFound />,
             },
           ])}
         />
@@ -65,5 +77,4 @@ function App() {
     </>
   );
 }
-
 export default App;
