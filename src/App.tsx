@@ -1,35 +1,69 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import "./App.css";
+import AuthLayout from "./Components/Login/AuthLayout";
+import Login from "./Components/Login/Login";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Registration from "./Components/Login/Registration";
+import LoaderSpiner from "./Components/common/LoaderSpiner";
+import { useEffect, useState } from "react";
+import HomeLayout from "./Components/Home/HomeLayout";
+import About from "./Components/Home/About";
+import Home from "./Components/Home/Home";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ThankYouScreen from "./Components/Login/ThankYouScreen";
 function App() {
-  const [count, setCount] = useState(0)
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [jwtToken, setJwtToken] = useState("");
+  useEffect(() => {
+    const storedToken = localStorage.getItem("jwtToken");
+    if (storedToken) {
+      setJwtToken(storedToken);
+    }
+  }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1200);
+  }, []);
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <ToastContainer />
+      {isLoading ? (
+        <LoaderSpiner />
+      ) : (
+        <RouterProvider
+          router={createBrowserRouter([
+            {
+              path: "/",
+              element: <AuthLayout />,
+              children: [
+                {
+                  path: "/",
+                  element: <Login />,
+                },
+                {
+                  path: "/register-account",
+                  element: <Registration />,
+                },
+                {
+                  path: "/thank-you",
+                  element: <ThankYouScreen />,
+                },
+                // {
+                //   path: "/",
+                //   element: <Home />,
+                // },
+                // {
+                //   path: "/about-us",
+                //   element: <About />,
+                // },
+              ],
+            },
+          ])}
+        />
+      )}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
