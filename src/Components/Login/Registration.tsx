@@ -1,9 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useAppDispatch } from "../../Redux/hook";
+import { registerUser } from "../../Redux/Slice/authenticationSlice";
 function Registration() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [validationSchema] = useState(
     yup.object().shape({
       username: yup.string().required("Username is required"),
@@ -22,8 +26,12 @@ function Registration() {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
-  const onSubmit = (data: { username: string; password: string }) => {
-    console.log(data);
+  const onSubmit = async (createUser: {
+    username: string;
+    password: string;
+  }) => {
+    await dispatch(registerUser(createUser));
+    navigate("/");
   };
   return (
     <div className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">

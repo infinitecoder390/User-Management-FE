@@ -3,7 +3,10 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useState } from "react";
+import { useAppDispatch } from "../../Redux/hook";
+import { login } from "../../Redux/Slice/authenticationSlice";
 function Login() {
+  const dispatch = useAppDispatch();
   const [validationSchema] = useState(
     yup.object().shape({
       username: yup.string().required("Username is required"),
@@ -17,9 +20,11 @@ function Login() {
   } = useForm({ resolver: yupResolver(validationSchema) });
 
   const navigate = useNavigate();
-  const onSubmit = (data: { username: string; password: string }) => {
-    console.log(data);
-    // navigate("/dashboard");
+  const onSubmit = async (loginDto: { username: string; password: string }) => {
+    const response: any = await dispatch(login(loginDto));
+    if (!response.error) {
+      navigate("home");
+    }
   };
   return (
     <div className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">

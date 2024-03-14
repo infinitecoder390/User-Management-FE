@@ -12,20 +12,25 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ThankYouScreen from "./Components/Login/ThankYouScreen";
 import NotFound from "./Components/common/NotFound";
+import { useAppDispatch, useAppSelector } from "./Redux/hook";
+import { setJwtToken } from "./Redux/Slice/authenticationSlice";
+
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [jwtToken, setJwtToken] = useState("");
+  const dispatch = useAppDispatch();
+  const jwt = useAppSelector((state: any) => state.authentication.jwtToken);
   useEffect(() => {
-    const storedToken = localStorage.getItem("jwtToken");
+    const storedToken = sessionStorage.getItem("jwtToken");
     if (storedToken) {
-      setJwtToken(storedToken);
+      dispatch(setJwtToken(storedToken));
     }
-  }, []);
+  }, [jwt]);
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
     }, 1200);
   }, []);
+
   return (
     <>
       <ToastContainer />
@@ -36,8 +41,9 @@ function App() {
           router={createBrowserRouter([
             {
               path: "/",
-              element: jwtToken ? <HomeLayout /> : <AuthLayout />, //
-              children: jwtToken
+              element: jwt ? <HomeLayout /> : <AuthLayout />,
+              errorElement: <NotFound />,
+              children: jwt
                 ? [
                     {
                       path: "/",
@@ -66,10 +72,6 @@ function App() {
                       element: <ThankYouScreen />,
                     },
                   ],
-            },
-            {
-              path: "*",
-              element: <NotFound />,
             },
           ])}
         />

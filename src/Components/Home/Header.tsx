@@ -1,5 +1,14 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { setJwtToken } from "../../Redux/Slice/authenticationSlice";
+import { useAppDispatch } from "../../Redux/hook";
 function Header() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    sessionStorage.clear();
+    dispatch(setJwtToken(""));
+    navigate("/");
+  };
   return (
     <nav className="flex items-center bg-gray-800 p-3 flex-wrap">
       <a href="#" className="p-2 mr-4 inline-flex items-center">
@@ -42,12 +51,12 @@ function Header() {
           >
             <span>About</span>
           </NavLink>
-          <a
-            href="#"
-            className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-gray-900 hover:text-white"
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white items-center justify-center hover:bg-gray-900 hover:text-white"
           >
-            <span>Profile</span>
-          </a>
+            <span>LOGOUT</span>
+          </button>
         </div>
       </div>
     </nav>
